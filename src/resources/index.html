@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Single Select Demo</title>
+    <link href="../c/singleSelect_dropdown.css" rel="stylesheet"/>
+    <style>
+        .qsbfield{ width:600px; margin:0 auto}
+        .singleDD{ width:40%; margin-right:50px; box-sizing: border-box}
+        .sdTxt{ width:100%; padding:10px 0; box-sizing: border-box}
+        .fl{float: left;}
+        ul{ margin: 0 ; padding: 0}
+        ul li{ list-style: none; border-bottom: 1px solid #ececec}
+    </style>
+</head>
+
+<body>
+    <div class="qsbfield">
+           <div class="singleDD fl" id="exp_dd">
+                <div class="dWrap">
+                    <input class="sdTxt w85" type="text" name="abc" placeholder="Experience"/>
+                    <span class="smArw"></span>
+                </div>
+            </div>
+            <div class="singleDD fl" id="sal_dd">
+                <div class="dWrap">
+                    <input class="sdTxt" type="text" name="abc" placeholder="Experience" readonly/>
+                    <span class="smArw"></span>
+                </div>
+            </div>
+            <div style="clear:left; height:1px"></div>
+    </div>
+<script  src="../j/jquery-1.11.1.js"></script>
+<script  src="../j/singleSelect_DD.js"></script>
+<script>
+var expData = {};
+
+expData[0] = "abc&";
+for (var j=1; j<=30; j++) {
+	expData[j] = j;
+}
+	$('#exp_dd').singleDD({
+		data: expData,
+		maxHeight: 300,
+//		width:'399',	
+		//prefillData: $('#exp_dd').attr('data-value'),
+		callBack:function(arg){
+			$('#sal_dd').singleDD({
+				data: expData,
+				maxHeight: 300,
+							
+			});		
+			
+		}
+		
+	});
+	
+</script>
+</body>
+</html>
