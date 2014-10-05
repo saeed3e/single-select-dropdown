@@ -4,17 +4,22 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Single Select Demo</title>
     <link href="../c/singleSelect_dropdown.css" rel="stylesheet"/>
+    <link href="../c/customScroll.css" rel="stylesheet"/>    
     <style>
+        body{margin: 0; }
         .qsbfield{ width:600px; margin:0 auto}
         .singleDD{ width:40%; margin-right:50px; box-sizing: border-box}
         .sdTxt{ width:100%; padding:10px 0; box-sizing: border-box}
         .fl{float: left;}
         ul{ margin: 0 ; padding: 0}
         ul li{ list-style: none; border-bottom: 1px solid #ececec}
+        header, footer{ background-color: #ececec; height: 40px; margin-bottom: 40px; text-align: center;}
+        footer{ bottom: 0 ; position: absolute; height: 40px; width: 100%; margin-bottom: 0}
     </style>
 </head>
 
 <body>
+    <header>Single Select DropDown</header>
     <div class="qsbfield">
            <div class="singleDD fl" id="exp_dd">
                 <div class="dWrap">
@@ -29,32 +34,36 @@
                 </div>
             </div>
             <div style="clear:left; height:1px"></div>
+
     </div>
+    <footer>c: 2014</footer>
 <script  src="../j/jquery-1.11.1.js"></script>
 <script  src="../j/singleSelect_DD.js"></script>
+<script  src="../j/customScroll.js"></script>
+
 <script>
 var expData = {};
 
-expData[0] = "abc&";
+expData[0] = "deSelect";
 for (var j=1; j<=30; j++) {
 	expData[j] = j;
 }
 	$('#exp_dd').singleDD({
 		data: expData,
-		maxHeight: 300,
+		maxHeight: 215,
 //		width:'399',	
 		//prefillData: $('#exp_dd').attr('data-value'),
 		callBack:function(arg){
+            console.log(arg)
 			$('#sal_dd').singleDD({
 				data: expData,
-				maxHeight: 300,
-							
-			});		
-			
+                maxHeight: 215
+			});
+  //          customScroll.init();			
 		}
 		
 	});
-	
+//customScroll.init();
 </script>
 </body>
 </html>

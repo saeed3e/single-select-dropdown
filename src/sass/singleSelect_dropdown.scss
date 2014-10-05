@@ -9,13 +9,14 @@
  	position: relative;
  	.dWrap{position:relative}
     .dWrap{@extend %sWrap;}
-    .sdTxt{cursor: pointer; border: 0}
+    .sdTxt{cursor: pointer; border: 0; padding: 10px}
     .smArw{display:inline-block; right: 10px;top: 18px;z-index: 1;position: absolute; margin:0}
     .sDrop{position:absolute;background-color:#fff;display:none;max-height:340px; overflow-y: scroll;
     	box-shadow:1px 1px 4px rgba(0,0,0,0.2);z-index:45;
         ul{border: solid #ccc\9; border-width: 0 1px 1px 1px\9;}
         li{padding:6px 5px 6px 10px;cursor: pointer;;margin:0;}
     }
+
     .sAct{color:#3875D7; font-weight: bold}
 	
 	/** IE7 z-index for position:absolute .sDrop require .singleDD to have some z-Index*/					

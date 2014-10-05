@@ -8,7 +8,7 @@
 
 .singleDD { background-color: #fff; position: relative; /** IE7 z-index for position:absolute .sDrop require .singleDD to have some z-Index*/ /** --- */ }
 .singleDD .dWrap { position: relative; }
-.singleDD .sdTxt { cursor: pointer; border: 0; }
+.singleDD .sdTxt { cursor: pointer; border: 0; padding: 10px; }
 .singleDD .smArw { display: inline-block; right: 10px; top: 18px; z-index: 1; position: absolute; margin: 0; }
 .singleDD .sDrop { position: absolute; background-color: #fff; display: none; max-height: 340px; overflow-y: scroll; box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2); z-index: 45; }
 .singleDD .sDrop ul { border: solid #cccccc \9; border-width: 0 1px 1px 1px\9; }

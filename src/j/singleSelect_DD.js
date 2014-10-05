@@ -1,5 +1,29 @@
 /*jslint eqeq:true*/
 /*******Start of singleDD (version : v.2.1.0)*/
+
+var ieObj = {
+	scrollHandler : function(container, scrollContainer, firstElement, curActiveTouple){
+		if(curActiveTouple.length){
+			var scrollTopPos,
+				scrollContr 	=	container;
+			var maxHeight 		=	scrollContr.outerHeight();
+			var visible_top 	=	scrollContr.scrollTop();
+			var visible_bottom 	=	maxHeight + visible_top;
+			var high_top 		=	(curActiveTouple.position().top - scrollContainer.position().top) + firstElement.scrollTop();
+			var high_bottom 	=	high_top + curActiveTouple.outerHeight();
+
+			if (high_bottom >= visible_bottom){
+				scrollTopPos = (high_bottom - maxHeight) > 0 ? high_bottom - maxHeight : 0;
+				scrollContr.scrollTop(scrollTopPos);
+			} else if (high_top < visible_top){
+				scrollTopPos = high_top;
+				scrollContr.scrollTop(scrollTopPos);
+			}
+			return scrollTopPos;	
+		}		
+	}
+};
+
 (function ($) {
 	var curOpen;
 	$.fn.singleDD = function(opt){
@@ -7,13 +31,7 @@
 			var defaults = {
 						maxHeight		: 	200,
 						data 			: 	{},
-						width 			: 	false,
-						prefillData 	: 	false,
-						customScroll 	: 	true,
-						sortPrefix 		: 	'',
-						//selectedColor 	: 	'#000',
-						//selectedId 		: 	'a',
-						callBack 		: 	function(){}
+						customScroll 	: 	true
 			},
 			opts 		=  	$.extend({},defaults,opt); //override defaults options
 
@@ -49,26 +67,27 @@
 						inpWrap[0].focus();
 						_t.dropCont.css({'display':'block'});
 						$(this).parents('.singleDD').addClass('zIndexIE7');
+						opts.onOpen?opts.onOpen():'';
 					}
 				}).on('keydown',function(e){
 					var kCd = _t.keyCode(e),node;
+					var firstChild = _t.dropCont.find(':first-child');
+					var ulCont = _t.dropCont.find('ul');
+					var ulCont_parent = ulCont.parent();
 
-					if(kCd==40){
+					if(kCd==39 || kCd==40){
 						node = _t.nextSelection.call(_t,_t.currActiveItem);
 						_t.setValue.call(_t,node);
-					}else if(kCd==38){
+						ieObj.scrollHandler(ulCont_parent,ulCont,firstChild,node);
+					}else if(kCd==37 || kCd==38){
 						node = _t.prevSelection.call(_t,_t.currActiveItem);
 						_t.setValue.call(_t,node);
-					}else if(kCd==13){
+						ieObj.scrollHandler(ulCont_parent,ulCont,firstChild,node);
+					}else if(kCd==9 || kCd==13 || kCd == 27){
 						_t.currentActive =false;
 						_t.onblur(e,$(this));
 						_t.currentActive =true;
-					}else if(kCd==9){
-						_t.currentActive = false;
-						_t.onblur(e,$(this));
-						_t.currentActive = true;
-					}
-
+					}					
 				}).on('focus',function(e){
 					_t.disableScroll(e);
 					_t.currActiveItem = _t.dropCont.find('li:first-child');
@@ -81,18 +100,18 @@
 
 				_t.dropCont.on('click','li',function(){ //Bind click event on each suggestion/options
 					var val = $(this).text();
-					var id = _t.remDelimiter($(this).attr('id'),opts);
-					//var clr = id == opts.softPrefix? '#a9a9a9': opts.//selectedColor;
+					var id = _t.remDelimiter($(this).attr('id'));
 					if(id){
-						_t.inpTextElm.val(val);//.css({'color':clr});
+						_t.inpTextElm.val(val);
 						_t.hidElm.attr({'value':id});
-						_t.dropCont.css({'display':'none'});
-						inpWrap[0].focus();
-						opts.callBack?opts.callBack(id):'';
 					}else{
 						_t.inpTextElm.val('');
 						_t.hidElm.attr({'value':''});
-					}					
+					}
+					_t.dropCont.css({'display':'none'});
+					inpWrap[0].focus();
+					if(opts.callBack)opts.callBack(id);
+					if(opts.onChange)opts.onChange(id);				
 				}).on('mouseover','li',function(){
 					$(this).addClass('sAct');
 				}).on('mouseout','li',function(){
@@ -100,11 +119,19 @@
 				}).html(_t.appendData.call(_t)); // fill data in dropdown;
 
 
-				_t.prefillData(opts,_t.inpTextElm,id,_t.hidElm);	// set prefill value
+				_t.prefillData(opts,id);	// set prefill value
 
 			}
 
 			var prototype_Objects = {
+				
+				prefillData : function(opts,id){	//for prefiil data
+					if(opts.data[opts.prefillData]){
+						this.inpTextElm.val(opts.data[opts.prefillData]);
+						this.hidElm.attr({'value':prototype_Objects.remDelimiter(opts.prefillData)});
+					}
+				},
+
 				setVal_inHiddenField : function(Ival,Hval){
 					this.inpTextElm.val(Ival);
 					this.hidElm.val(Hval);
@@ -116,12 +143,13 @@
 						_t.dropCont.css({'display':'none'});	
 						_t.enableScroll(e);
 						node.parents('.singleDD').removeClass('zIndexIE7');
+						opts.onClose?opts.onClose():'';
 					}
 				},
 				setValue: function(node){
 					var id = node.attr('id');
 					if(node && node.length && node.text().toLowerCase() !=="select"){
-						prototype_Objects.setVal_inHiddenField.call(this,node.text(),this.remDelimiter(id,opts));
+						prototype_Objects.setVal_inHiddenField.call(this,node.text(),this.remDelimiter(id));
 					}else{
 						prototype_Objects.setVal_inHiddenField.call(this,'','');
 					}
@@ -175,16 +203,9 @@
 					}
 					return prevNode;	
 				},
-
-				prefillData : function(opts,inpElm,id,hidElm){	//for prefiil data
-					if(opts.data[opts.prefillData]){
-						inpElm.val(opts.data[opts.prefillData]);
-						hidElm.attr({'value':prototype_Objects.remDelimiter(opts.prefillData,opts)});
-					}
-				},
 						
-				remDelimiter : function(txt,op){ // remove prefilx delimeter from the keys
-					return txt && op.sortPrefix?txt.replace(op.sortPrefix,''):txt;
+				remDelimiter : function(txt){ // remove prefilx delimeter from the keys
+					return txt && opts.sortPrefix?txt.replace(opts.sortPrefix,''):txt;
 				}
 
 			};
@@ -206,9 +227,16 @@
 		
 	};
 
-	
-	
-	
-	
 })(jQuery);
 //End of singleDD
+
+/*Parameters*/
+// onChange
+// onClose
+// onOpen
+// sortPrefix
+// maxHeight
+// prefillData
+// width
+// customScroll
+// data
