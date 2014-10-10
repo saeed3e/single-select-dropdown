@@ -15,6 +15,7 @@
         ul li{ list-style: none; border-bottom: 1px solid #ececec}
         header, footer{ background-color: #ececec; height: 40px; margin-bottom: 40px; text-align: center;}
         footer{ bottom: 0 ; position: absolute; height: 40px; width: 100%; margin-bottom: 0}
+        .singleDD .sDrop{ overflow-y:auto;}
     </style>
 </head>
 
@@ -48,22 +49,24 @@ expData[0] = "deSelect";
 for (var j=1; j<=30; j++) {
 	expData[j] = j;
 }
+
 	$('#exp_dd').singleDD({
 		data: expData,
-		maxHeight: 215,
-//		width:'399',	
-		//prefillData: $('#exp_dd').attr('data-value'),
+		maxHeight: 206,
 		callBack:function(arg){
-            console.log(arg)
-			$('#sal_dd').singleDD({
-				data: expData,
-                maxHeight: 215
-			});
-  //          customScroll.init();			
+            var Data={};
+            for (var j=arg; j<=30; j++) {
+                Data[j] = j;
+            }
+            abc.replaceData(Data)
 		}
 		
 	});
-//customScroll.init();
+    var abc = $('#sal_dd').singleDD({
+        data: expData,
+        maxHeight: 215
+    });
+customScroll.init();
 </script>
 </body>
 </html>
