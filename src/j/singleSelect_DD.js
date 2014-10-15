@@ -1,6 +1,6 @@
 /*global ieObj*/
 /*jslint eqeq:true*/
-/*******Start of singleDD (version : v.2.2.0)*/
+/*******Start of singleDD (version : v.2.2.1)*/
 
 (function ($) {
 	var curOpen;
@@ -11,7 +11,8 @@
 						data 			 : 	{},
 						customScroll 	 : 	true,
 						placeholderColor : '#a9a9a9',
-						selectColor		 : '#333'
+						selectColor		 : '#333',
+						animationSpeed	 :  200
 			},
 			opts 		=  	$.extend({},defaults,opt); //override defaults options
 
@@ -40,6 +41,12 @@
 					_t.dropCont.find('ul').html(_t.appendData(data));
 				};
 
+				$(document).click(function(e){
+					if(!$(e.target).parents('.singleDD').length){
+						_t.dropCont.slideUp(opts.animationSpeed);
+					}
+				});
+
 				elm.on('mouseenter',function(){
 					_t.currentActive = true;
 				}).on('mouseleave',function(){
@@ -50,9 +57,14 @@
 				inpWrap.on('click','.sdTxt, .smArw',function(e){
 					if(_t.currentActive){
 						inpWrap[0].focus();
-						_t.dropCont.css({'display':'block'});
+						_t.dropCont.slideDown(opts.animationSpeed);
 						$(this).parents('.singleDD').addClass('zIndexIE7');
 						opts.onOpen?opts.onOpen():'';
+						
+						/** Custom ScrollBar initialization */
+						if(_t.dropCont[0].csb){
+							_t.dropCont[0].csb.reset();
+						}
 					}
 				}).on('keydown',function(e){
 					var kCd = _t.keyCode(e),node;
@@ -79,7 +91,9 @@
 					_t.currActiveItem = _t.dropCont.find('li:first-child');
 					!_t.inpTextElm.val()? _t.currActiveItem.addClass('sAct'):'';
 				}).on('blur',function(e){
-					_t.onblur(e,$(this));				
+					_t.enableScroll(e);
+					_t.onblur(e,$(this));
+
 				});
 
 
@@ -93,10 +107,9 @@
 					}else{
 						_t.setVal_inHiddenField(val,id);
 					}
-					//_t.dropCont.css({'display':'none'});
 					inpWrap[0].focus();
 					if(opts.callBack)opts.callBack(id);
-					_t.dropCont.css({'display':'none'});//calling callBack first & then hiding the dropdown
+					_t.dropCont.slideUp(opts.animationSpeed);//calling callBack first & then hiding the dropdown
 					if(opts.onChange)opts.onChange(id);				
 				}).on('mouseover','li',function(){
 					$(this).addClass('sAct');
@@ -134,9 +147,10 @@
 				},
 				onblur : function(e,node){
 					var _t = this;
+
 					if(!_t.currentActive){
-						_t.dropCont.css({'display':'none'});	
-						_t.enableScroll(e);
+						_t.dropCont.slideUp(opts.animationSpeed);
+						//_t.enableScroll(e);
 						node.parents('.singleDD').removeClass('zIndexIE7');
 						opts.onClose?opts.onClose():'';
 					}
@@ -241,4 +255,10 @@
 // customScroll
 // data
 
-//Test
+
+/********************Fixes in this version************/
+//ie 8 and ie7 issue :  when user click on scroll bar single dd doesn't close 
+//Status : Fixed
+// add animationSpeed parameter
+// Fixed : window scroll enable disable problem
+
