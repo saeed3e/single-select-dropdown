@@ -10,7 +10,7 @@
 .singleDD .dWrap { position: relative; }
 .singleDD .sdTxt { cursor: pointer; border: 0; padding: 10px; }
 .singleDD .smArw { display: inline-block; right: 10px; top: 18px; z-index: 1; position: absolute; margin: 0; }
-.singleDD .sDrop { position: absolute; background-color: #fff; display: none; max-height: 340px; overflow-y: scroll; box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2); z-index: 45; }
+.singleDD .sDrop { position: absolute; background-color: #fff; display: none; max-height: 340px; overflow-y: auto; -webkit-box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2); box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2); z-index: 45; }
 .singleDD .sDrop ul { border: solid #cccccc \9; border-width: 0 1px 1px 1px\9; }
 .singleDD .sDrop li { padding: 6px 5px 6px 10px; cursor: pointer; margin: 0; }
 .singleDD .sAct { color: #3875D7; font-weight: bold; }

@@ -1,14 +1,22 @@
 /*global ieObj*/
 /*jslint eqeq:true*/
-/*******Start of singleDD (version : v.2.2.1)*/
+/*******Start of singleDD (version : v.2.3.0)*/
 
+$(document).click(function(e){
+	if(!$(e.target).parents('.singleDD').length){
+		$('.singleDD .sDrop').slideUp(200);
+	}
+});
+
+var previousOpen;		
 (function ($) {
 	var curOpen;
 	$.fn.singleDD = function(opt){
-		
+
 			var defaults = {
 						maxHeight		 : 	200,
 						data 			 : 	{},
+						defaultIndex	 :  true,
 						customScroll 	 : 	true,
 						placeholderColor : '#a9a9a9',
 						selectColor		 : '#333',
@@ -41,11 +49,7 @@
 					_t.dropCont.find('ul').html(_t.appendData(data));
 				};
 
-				$(document).click(function(e){
-					if(!$(e.target).parents('.singleDD').length){
-						_t.dropCont.slideUp(opts.animationSpeed);
-					}
-				});
+
 
 				elm.on('mouseenter',function(){
 					_t.currentActive = true;
@@ -57,14 +61,18 @@
 				inpWrap.on('click','.sdTxt, .smArw',function(e){
 					if(_t.currentActive){
 						inpWrap[0].focus();
-						_t.dropCont.slideDown(opts.animationSpeed);
+
+						_t.dropCont.slideDown(opts.animationSpeed,function(){						
+							/** Custom ScrollBar initialization */
+							if(_t.dropCont[0].csb){
+								_t.dropCont[0].csb.reset();
+							}
+						});
 						$(this).parents('.singleDD').addClass('zIndexIE7');
 						opts.onOpen?opts.onOpen():'';
+
 						
-						/** Custom ScrollBar initialization */
-						if(_t.dropCont[0].csb){
-							_t.dropCont[0].csb.reset();
-						}
+						
 					}
 				}).on('keydown',function(e){
 					var kCd = _t.keyCode(e),node;
@@ -94,6 +102,8 @@
 					_t.enableScroll(e);
 					_t.onblur(e,$(this));
 
+				}).mousedown(function() {
+					 return false;   	// Fix : when click on scorollbar focus lost-> IE (8.0), Opera (11.61), Chrome (17.0) and Safari (5.1) all removed focus from the focusable element
 				});
 
 
@@ -101,14 +111,13 @@
 				_t.dropCont.on('click','li',function(){ //Bind click event on each suggestion/options
 					var val = $(this).text();
 					var id = _t.remDelimiter($(this).attr('id'));
-
-					if($(this).index()===0){
+					if(opts.defaultIndex && $(this).index()===0){
 						_t.setVal_inHiddenField('','');
 					}else{
 						_t.setVal_inHiddenField(val,id);
 					}
 					inpWrap[0].focus();
-					if(opts.callBack)opts.callBack(id);
+					//if(opts.callBack)opts.callBack(id);
 					_t.dropCont.slideUp(opts.animationSpeed);//calling callBack first & then hiding the dropdown
 					if(opts.onChange)opts.onChange(id);				
 				}).on('mouseover','li',function(){
@@ -150,10 +159,11 @@
 
 					if(!_t.currentActive){
 						_t.dropCont.slideUp(opts.animationSpeed);
-						//_t.enableScroll(e);
 						node.parents('.singleDD').removeClass('zIndexIE7');
 						opts.onClose?opts.onClose():'';
+						previousOpen = _t.dropCont;
 					}
+					
 				},
 				setValue: function(node){
 					var id = node.attr('id');
@@ -165,12 +175,12 @@
 				},
 				appendData : function(data){
 					var li='';
-					for(var x in opts.data){
+					for(var x in data){
 						if(opts.textWrap){
-						li+='<li id="'+x+'"><'+opts.textWrap+'>'+opts.data[x]+'</'+opts.textWrap+'></li>';
+						li+='<li id="'+x+'"><'+opts.textWrap+'>'+data[x]+'</'+opts.textWrap+'></li>';
 						}
 						else
-						li += '<li id="'+x+'">'+opts.data[x]+'</li>';
+						li += '<li id="'+x+'">'+data[x]+'</li>';
 					}
 					return '<ul>'+li+'</ul>';
 				},
@@ -256,9 +266,5 @@
 // data
 
 
-/********************Fixes in this version************/
-//ie 8 and ie7 issue :  when user click on scroll bar single dd doesn't close 
-//Status : Fixed
-// add animationSpeed parameter
-// Fixed : window scroll enable disable problem
-
+/********************Enhancement in this version************/
+// add defaultIndex parameter
