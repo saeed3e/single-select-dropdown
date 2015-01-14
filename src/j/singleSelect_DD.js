@@ -1,6 +1,6 @@
 /*global ieObj*/
 /*jslint eqeq:true*/
-/*******Start of singleDD (version : v.2.3.0)*/
+/*******Start of singleDD (version : v.2.4.0)*/
 
 $(document).click(function(e){
 	if(!$(e.target).parents('.singleDD').length){
@@ -72,7 +72,6 @@ var previousOpen;
 						opts.onOpen?opts.onOpen():'';
 
 						
-						
 					}
 				}).on('keydown',function(e){
 					var kCd = _t.keyCode(e),node;
@@ -112,14 +111,14 @@ var previousOpen;
 					var val = $(this).text();
 					var id = _t.remDelimiter($(this).attr('id'));
 					if(opts.defaultIndex && $(this).index()===0){
-						_t.setVal_inHiddenField('','');
+						_t.setVal_inHiddenField('','',true);
 					}else{
 						_t.setVal_inHiddenField(val,id);
 					}
 					inpWrap[0].focus();
 					//if(opts.callBack)opts.callBack(id);
 					_t.dropCont.slideUp(opts.animationSpeed);//calling callBack first & then hiding the dropdown
-					if(opts.onChange)opts.onChange(id);				
+					//if(opts.onChange)opts.onChange(id);				
 				}).on('mouseover','li',function(){
 					$(this).addClass('sAct');
 				}).on('mouseout','li',function(){
@@ -135,12 +134,12 @@ var previousOpen;
 				
 				prefillData : function(opts,id){	//for prefiil data
 					if(opts.data[opts.prefillData]){
-						if(opts.callBack)opts.callBack(opts.prefillData);
+						//if(opts.callBack)opts.callBack(opts.prefillData);
 						prototype_Objects.setVal_inHiddenField.call(this,opts.data[opts.prefillData],prototype_Objects.remDelimiter(opts.prefillData));
 					}
 				},
 
-				setVal_inHiddenField : function(Ival,Hval){
+				setVal_inHiddenField : function(Ival,Hval,defaultIndex){
 					var color;
 					if(!jQuery.support.placeholder){
 						if(!Ival){
@@ -152,7 +151,7 @@ var previousOpen;
 					}
 					this.inpTextElm.val(Ival).css({'color':color});
 					this.hidElm.val(Hval);
-					opts.callBack?opts.callBack(Hval):'';
+					if(Hval || defaultIndex)opts.callBack?opts.callBack(Hval):'';
 				},
 				onblur : function(e,node){
 					var _t = this;
@@ -167,10 +166,10 @@ var previousOpen;
 				},
 				setValue: function(node){
 					var id = node.attr('id');
-					if(node && node.length && node.text().toLowerCase() !=="select"){
-						prototype_Objects.setVal_inHiddenField.call(this,node.text(),this.remDelimiter(id));
-					}else{
+					if(opts.defaultIndex && node.index()==0){
 						prototype_Objects.setVal_inHiddenField.call(this,'','');
+					}else if(node && node.length){
+						prototype_Objects.setVal_inHiddenField.call(this,node.text(),this.remDelimiter(id));
 					}
 				},
 				appendData : function(data){
@@ -264,7 +263,7 @@ var previousOpen;
 // width
 // customScroll
 // data
+// replaceData
 
-
-/********************Enhancement in this version************/
-// add defaultIndex parameter
+/********************fixes in this version************/
+// remvoe some fixes

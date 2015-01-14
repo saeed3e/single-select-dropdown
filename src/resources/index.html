@@ -284,21 +284,50 @@
 <footer>c: 2014</footer>
 <script  src="../j/jquery-1.11.1.js"></script>
 <script  src="../j/IE_commonObject.js"></script>
-<script  src="../j/singleSelect_DD.js"></script>
+<script  src="../j/singleSelect_DD_v3.2.1.js"></script>
 <script  src="../j/customScroll.js"></script>
 
 
 <script>
 var expData = {},flg=0,mnc;
 
-expData['a'] = "Select";
-for (var j=1; j<=30; j++) {
-	expData['a'+j] = j;
+//expData['a'] = "Select";
+
+for (var j = 1; j<=30; j++) {
+    expData[j] = j;
 }
-	$('#exp_dd').singleDD({
+
+
+//Dropdown plugin data
+var ddData = [
+    {
+        text: "Facebook",
+        value: 1,
+        selected: false
+    },
+    {
+        text: "Twitter",
+        value: 2,
+        selected: false
+    },
+    {
+        text: "LinkedIn",
+        value: 3,
+        selected: true
+    },
+    {
+        text: "Foursquare",
+        value: 4,
+        selected: false
+    }
+];
+
+
+var singleDDIns=	$('#exp_dd').singleDD({
 		data: expData,
 		maxHeight: 215,
         sortPrefix:'a',
+        prefillData: '3',
         defaultIndex:false,
 		callBack:function(arg){
             if(!flg){
